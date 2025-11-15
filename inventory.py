@@ -395,7 +395,7 @@ class DropsCampaign:
 
     @property
     def eligible(self) -> bool:
-        return True
+        return self.linked or self.has_badge_or_emote
 
     @cached_property
     def has_badge_or_emote(self) -> bool:
@@ -449,7 +449,7 @@ class DropsCampaign:
         self, channel: Channel | None = None, ignore_channel_status: bool = False
     ) -> bool:
         return (
-            self.eligible  # account is eligible
+            True  # account is eligible (modified before self.eligible)
             and self.active  # campaign is active (and valid)
             and (
                 channel is None or (  # channel isn't specified,
@@ -489,7 +489,7 @@ class DropsCampaign:
         # Same as can_earn, but doesn't check the channel
         # and uses a future timestamp to see if we can earn this campaign later
         return (
-            self.eligible
+            True # Modified before self.eligible
             and self._valid
             and self.ends_at > datetime.now(timezone.utc)
             and self.starts_at < stamp
